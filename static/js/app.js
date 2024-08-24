@@ -4,17 +4,13 @@ function buildMetadata(sample) {
 
     // get the metadata field
     let metadata = data.metadata;
-    console.log(metadata);
-    console.log(sample)
+
     // Filter the metadata for the object with the desired sample number
-// TODO: SOMETHING IS GOING WRONG WITH THE FILTER HERE. RETURNS AN EMPTY LIST FOR indiv_metadata
     function findSample(x){
-      let dropdown = d3.select('#selDataset');
-      return x.id == sample;
+      return x.id == sample; // console logging sample showed that it's the number we're looking for.
     };
     let indiv_metadata = metadata.filter(findSample);
 
-    console.log(indiv_metadata);
 
     // Use d3 to select the panel with id of `#sample-metadata`
     let panel = d3.select('#sample-metadata');
@@ -34,29 +30,63 @@ function buildCharts(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
 
     // Get the samples field
-
+    samples_field = data.samples
 
     // Filter the samples for the object with the desired sample number
-
-
+    function findSample(x){
+      return x.id == sample; // console logging sample showed that it's the number we're looking for.
+    };
+    
+    let indiv_data = samples_field.filter(findSample)[0]
+    console.log(indiv_data)
     // Get the otu_ids, otu_labels, and sample_values
-
+    let otu_ids = indiv_data.otu_ids
+    let otu_labels = indiv_data.otu_labels
+    let sample_values = indiv_data.sample_values
 
     // Build a Bubble Chart
-
+    bubbletrace = {
+      x: otu_ids,
+      y: sample_values,
+      mode: 'markers',
+      marker: {
+        size: sample_values,
+        color: otu_ids,
+        hovertext: otu_labels
+      }
+    }
 
     // Render the Bubble Chart
-
+    let bubbleplot_data = [bubbletrace];
+    let bubbleplot_layout = {title: 'Bacteria Cultures per Sample'};
+    Plotly.newPlot('bubble',bubbleplot_data,bubbleplot_layout);
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
-
-
+    let otu_strings = [];
+    for (var id in otu_ids){otu_strings.push(String(otu_ids[id]))};
+    
     // Build a Bar Chart
     // Don't forget to slice and reverse the input data appropriately
 
+    bartrace = {
+      x: sample_values.slice(0,10).reverse(),
+      yticks: otu_strings.slice(0,10).reverse(),
+      type: 'bar',
+      orientation: 'h',
+      hovertext: otu_labels.slice(0,10).reverse(),
+      yticks: otu_strings.slice(0,10).reverse()
+    };
+
+    bardata = [bartrace];
+    barlayout = {
+      title: 'Top 10 Bacteria Cultures Found',
+      yaxis:{
+        ticktext: [otu_strings.slice(0,10).reverse()]
+      }
+    }
 
     // Render the Bar Chart
-
+    Plotly.newPlot('bar',bardata,barlayout)
   });
 }
 
