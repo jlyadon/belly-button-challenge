@@ -63,26 +63,22 @@ function buildCharts(sample) {
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
     let otu_strings = [];
-    for (var id in otu_ids){otu_strings.push(String(otu_ids[id]))};
-    
+    for (var id in otu_ids){otu_strings.push('OTU ' + String(otu_ids[id]))};
+    console.log(otu_ids)
     // Build a Bar Chart
     // Don't forget to slice and reverse the input data appropriately
 
     bartrace = {
       x: sample_values.slice(0,10).reverse(),
-      yticks: otu_strings.slice(0,10).reverse(),
       type: 'bar',
       orientation: 'h',
       hovertext: otu_labels.slice(0,10).reverse(),
-      yticks: otu_strings.slice(0,10).reverse()
+      y: otu_strings.slice(0,10).reverse(),
     };
 
     bardata = [bartrace];
     barlayout = {
-      title: 'Top 10 Bacteria Cultures Found',
-      yaxis:{
-        ticktext: [otu_strings.slice(0,10).reverse()]
-      }
+      title: 'Top 10 Bacteria Cultures Found in Sample',
     }
 
     // Render the Bar Chart
